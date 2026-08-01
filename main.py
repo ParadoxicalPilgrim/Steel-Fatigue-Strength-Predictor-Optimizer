@@ -70,7 +70,7 @@ with tab1:
     st.markdown("---") # Just to separate the UI with a horizontal line
     
     # Prediction Button
-    if st.button("Predict Fatigue Strength 🚀", use_container_width=True):
+    if st.button("Predict Fatigue Strength ", use_container_width=True):
         
         # Packing the 25 variables into a 2D array because sklearn models require 2D arrays as input
         input_data = np.array([[f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, 
