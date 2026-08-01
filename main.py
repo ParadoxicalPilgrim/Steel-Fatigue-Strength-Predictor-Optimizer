@@ -176,7 +176,7 @@ with tab2:
             achieved_strength = model.predict(best_recipe.reshape(1, -1))[0]
             
             st.success(f"### 🎉 Optimization Complete! Achieved Strength: {achieved_strength:.2f} MPa")
-st.balloons()
+            st.balloons()
             
             st.markdown("#### Complete Optimized Composition (All 25 Parameters):")
             
