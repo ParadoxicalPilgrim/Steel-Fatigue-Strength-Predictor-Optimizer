@@ -27,12 +27,6 @@ with tab1:
     st.header("Predict Strength from Chemical Composition")
     st.markdown("Enter the exact chemical composition and heat treatment parameters below:")
     
-    # 4 columns ka grid banayenge taaki UI clean aur professional lage
-    col1, col2, col3, col4 = st.columns(4)
-    
-    # ⚠️ IMPORTANT: Yahan jo f1 se f25 tak variables hain, 
-    # inka naam aur order tere Jupyter Notebook ke `X` dataframe ke columns jaisa hona chahiye!
-    
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
@@ -73,27 +67,27 @@ with tab1:
         f24 = st.number_input("24. dB", value=0.0)
         f25 = st.number_input("25. dC", value=0.0)
         
-    st.markdown("---") # Ek horizontal line UI ko separate karne ke liye
+    st.markdown("---") # Just to separate the UI with a horizontal line
     
     # Prediction Button
     if st.button("Predict Fatigue Strength 🚀", use_container_width=True):
         
-        # In 25 variables ko ek single 2D array mein pack kar rahe hain
-        # Kyunki sklearn model ko 2D array (1 row, 25 columns) chahiye hota hai
+        # Packing the 25 variables into a 2D array because sklearn models require 2D arrays as input
         input_data = np.array([[f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, 
                                 f11, f12, f13, f14, f15, f16, f17, f18, f19, f20, 
                                 f21, f22, f23, f24, f25]])
         
-        # Seedha loaded model se prediction maang rahe hain
+        # Asking for predictions from the loaded model which is ANN (Artificial Neural Network)
         prediction = model.predict(input_data)[0]
         
-        # Result ko ekdum badhiya style mein print karenge
+        # Printing the results
         st.success(f"### Predicted Fatigue Strength: {prediction:.2f} MPa")
-        st.balloons()
-# --- TAB 2: OPTIMIZER ---
+        st.balloons() # Just a fun animation upon calculation of result :)
+
+
 # --- TAB 2: OPTIMIZER ---
 with tab2:
-    st.header("Find Best Recipe for Target Strength (Inverse Design)")
+    st.header("Find Best Composition for Target Strength (Inverse Design)")
     st.markdown("Specify your required strength. The AI will reverse-engineer the exact 25-parameter composition!")
     
     # User target input
@@ -103,7 +97,7 @@ with tab2:
     st.subheader("🔒 Constraints & Fixed Parameters")
     st.info("Check the box to lock a parameter and set its fixed value. AI will optimize the rest.")
     
-    # 1. Master List of all 25 features with their (Name, Min, Max, Default)
+    # 1. List of all the 25 features , according to their order in the actual dataset, with their (Name, Min, Max, Default)
     features = [
         ("NT (°C)", 800.0, 950.0, 870.0),      # 0
         ("THT (°C)", 800.0, 950.0, 870.0),     # 1
@@ -132,7 +126,7 @@ with tab2:
         ("dC", 0.0, 10.0, 0.0)                 # 24
     ]
 
-    fixed_values_dict = {}  # Dictionary to remember which ones user locked
+    fixed_values_dict = {}  # Dictionary to remember which feature the user locked
     bounds = []             # List to feed into GA
     
     # 2. Dynamic UI for all 25 constraints inside an expander
@@ -152,14 +146,14 @@ with tab2:
                 else:
                     # Keep original broad boundaries
                     bounds.append([min_v, max_v])
-                st.markdown("---") # Visual separator
+                st.markdown("---") # Seperating into parts
                 
-    st.write("") # Add some spacing
+    st.write("") # Adding space
     
-    if st.button("Run AI Optimizer 🚀", use_container_width=True):
+    if st.button("Run AI Optimizer ", use_container_width=True):
         
         # UI Spinner while calculating
-        with st.spinner("AI is evaluating millions of combinations. Please wait ~10 seconds..."):
+        with st.spinner("AI is evaluating millions of combinations. Please wait ~20 seconds..."):
             
             # Step 3: Fitness Function
             def fitness_function(composition):
@@ -172,9 +166,9 @@ with tab2:
             result = differential_evolution(
                 fitness_function, 
                 bounds, 
-                maxiter=100,   # Increased from 30 to 100
-                popsize=20,    # Increased from 15 to 20
-                tol=0.01       # Stricter tolerance
+                maxiter=100,   
+                popsize=20,    
+                tol=0.01       # Strict tolerance
             )
             
             # Extract Results
@@ -190,7 +184,7 @@ with tab2:
             for i, (name, _, _, _) in enumerate(features):
                 res_col = res_cols[i % 4]
                 with res_col:
-                    # Agar user ne lock kiya tha, toh 🔒 icon dikhayenge, warna 🟢
+                    # If the user had locked, then it'll show 🔒 icon , otherwise 🟢
                     if i in fixed_values_dict:
                         st.info(f"🔒 **{name}:**\n{best_recipe[i]:.3f}")
                     else:
