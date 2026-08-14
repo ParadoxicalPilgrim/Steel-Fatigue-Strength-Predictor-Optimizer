@@ -17,7 +17,7 @@ try:
     model = load_model()
     st.success("Artificial Neural Network Model Loaded Successfully!!")
 except Exception as e:
-    st.error(f"⚠️ Couldn't load model!!. Error: {e}")
+    st.error(f"Couldn't load model!!.⚠️  Error: {e}")
 
 # --- 3. CREATING TABS FOR UI ---
 tab1, tab2 = st.tabs(["Manual Predictor (Forward)", "Smart GA Optimizer (Inverse)"])
