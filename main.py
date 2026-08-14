@@ -5,7 +5,7 @@ from scipy.optimize import differential_evolution
 
 # --- 1. PAGE SETUP ---
 st.set_page_config(page_title="Steel Fatigue Predictor", page_icon="⚙️", layout="wide")
-st.title("⚙️ Steel Fatigue Strength Predictor & Optimizer")
+st.title("Steel Fatigue Strength Predictor & Optimizer")
 
 # --- 2. LOAD THE MODEL ---
 # Using @st.cache_resource so that the model is loaded only once and cached for future use to avoid slowing down the site.
