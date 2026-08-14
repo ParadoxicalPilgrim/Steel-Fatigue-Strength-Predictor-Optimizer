@@ -15,12 +15,12 @@ def load_model():
 
 try:
     model = load_model()
-    st.success("✅ Artificial Neural Network Model Loaded Successfully!")
+    st.success("Artificial Neural Network Model Loaded Successfully!!")
 except Exception as e:
     st.error(f"⚠️ Couldn't load model!!. Error: {e}")
 
 # --- 3. CREATING TABS FOR UI ---
-tab1, tab2 = st.tabs(["📊 Manual Predictor (Forward)", "🧠 Smart GA Optimizer (Inverse)"])
+tab1, tab2 = st.tabs(["Manual Predictor (Forward)", "Smart GA Optimizer (Inverse)"])
 
 # --- TAB 1: PREDICTOR ---
 with tab1:
@@ -94,7 +94,7 @@ with tab2:
     target_mpa = st.number_input("Target Fatigue Strength (MPa)", min_value=200.0, max_value=1200.0, value=650.0, step=10.0)
     
     st.markdown("---")
-    st.subheader("🔒 Constraints & Fixed Parameters")
+    st.subheader("Constraints & Fixed Parameters")
     st.info("Check the box to lock a parameter and set its fixed value. AI will optimize the rest.")
     
     # 1. List of all the 25 features , according to their order in the actual dataset, with their (Name, Min, Max, Default)
@@ -175,7 +175,7 @@ with tab2:
             best_recipe = result.x
             achieved_strength = model.predict(best_recipe.reshape(1, -1))[0]
             
-            st.success(f"### 🎉 Optimization Complete! Achieved Strength: {achieved_strength:.2f} MPa")
+            st.success(f"### Optimization Complete! Achieved Strength: {achieved_strength:.2f} MPa")
             st.balloons()
             
             st.markdown("#### Complete Optimized Composition (All 25 Parameters):")
