@@ -7,6 +7,9 @@ from scipy.optimize import differential_evolution
 st.set_page_config(page_title="Steel Fatigue Predictor", page_icon="⚙️", layout="wide")
 st.title("Steel Fatigue Strength Predictor & Optimizer")
 
+# Domain of Applicability Update
+st.info("ℹ️ **Domain of Applicability:** This predictive model is trained strictly on the NIMS dataset. It is highly accurate for **carbon and low-alloy steels, carburizing steels, and spring steels**. Input boundaries are locked to the exact training distribution to prevent out-of-distribution (OOD) AI hallucinations.")
+
 # --- 2. LOAD THE MODEL ---
 # Using @st.cache_resource so that the model is loaded only once and cached for future use to avoid slowing down the site.
 @st.cache_resource
@@ -31,41 +34,41 @@ with tab1:
     
     with col1:
         st.markdown("**Heat Treatment (Phase 1)**")
-        f1 = st.number_input("1. NT (°C)", value=870.0)
-        f2 = st.number_input("2. THT (°C)", value=870.0)
-        f3 = st.number_input("3. THt (h)", value=1.0)
-        f4 = st.number_input("4. THQCr (°C/s)", value=20.0)
-        f5 = st.number_input("5. CT (°C)", value=0.0)
-        f6 = st.number_input("6. Ct (h)", value=0.0)
-        f7 = st.number_input("7. DT (°C)", value=0.0)
+        f1 = st.number_input("1. NT (°C)", min_value=800.0, max_value=950.0, value=870.0)
+        f2 = st.number_input("2. THT (°C)", min_value=800.0, max_value=950.0, value=870.0)
+        f3 = st.number_input("3. THt (h)", min_value=0.0, max_value=5.0, value=1.0)
+        f4 = st.number_input("4. THQCr (°C/s)", min_value=5.0, max_value=30.0, value=20.0)
+        f5 = st.number_input("5. CT (°C)", min_value=0.0, max_value=20.0, value=0.0)
+        f6 = st.number_input("6. Ct (h)", min_value=0.0, max_value=5.0, value=0.0)
+        f7 = st.number_input("7. DT (°C)", min_value=0.0, max_value=20.0, value=0.0)
         
     with col2:
         st.markdown("**Heat Treatment (Phase 2)**")
-        f8 = st.number_input("8. Dt (h)", value=0.0)
-        f9 = st.number_input("9. QmT (°C)", value=20.0)
-        f10 = st.number_input("10. TT (°C)", value=500.0)
-        f11 = st.number_input("11. Tt (h)", value=1.0)
-        f12 = st.number_input("12. TCr (°C/s)", value=10.0)
+        f8 = st.number_input("8. Dt (h)", min_value=0.0, max_value=5.0, value=0.0)
+        f9 = st.number_input("9. QmT (°C)", min_value=0.0, max_value=50.0, value=20.0)
+        f10 = st.number_input("10. TT (°C)", min_value=400.0, max_value=650.0, value=500.0)
+        f11 = st.number_input("11. Tt (h)", min_value=0.5, max_value=3.0, value=1.0)
+        f12 = st.number_input("12. TCr (°C/s)", min_value=1.0, max_value=20.0, value=10.0)
         st.markdown("**Chemical Comp. 1**")
-        f13 = st.number_input("13. Carbon (C) %", value=0.30)
-        f14 = st.number_input("14. Silicon (Si) %", value=0.20)
+        f13 = st.number_input("13. Carbon (C) %", min_value=0.1, max_value=0.6, value=0.30)
+        f14 = st.number_input("14. Silicon (Si) %", min_value=0.1, max_value=1.5, value=0.20)
         
     with col3:
         st.markdown("**Chemical Comp. 2**")
-        f15 = st.number_input("15. Manganese (Mn) %", value=0.80)
-        f16 = st.number_input("16. Phosphorus (P) %", value=0.01)
-        f17 = st.number_input("17. Sulfur (S) %", value=0.01)
-        f18 = st.number_input("18. Nickel (Ni) %", value=0.00)
-        f19 = st.number_input("19. Chromium (Cr) %", value=1.00)
-        f20 = st.number_input("20. Copper (Cu) %", value=0.00)
-        f21 = st.number_input("21. Molybdenum (Mo) %", value=0.20)
+        f15 = st.number_input("15. Manganese (Mn) %", min_value=0.4, max_value=2.0, value=0.80)
+        f16 = st.number_input("16. Phosphorus (P) %", min_value=0.005, max_value=0.03, value=0.01, format="%0.3f")
+        f17 = st.number_input("17. Sulfur (S) %", min_value=0.005, max_value=0.03, value=0.01, format="%0.3f")
+        f18 = st.number_input("18. Nickel (Ni) %", min_value=0.0, max_value=3.0, value=0.00)
+        f19 = st.number_input("19. Chromium (Cr) %", min_value=0.0, max_value=2.5, value=1.00)
+        f20 = st.number_input("20. Copper (Cu) %", min_value=0.0, max_value=1.0, value=0.00)
+        f21 = st.number_input("21. Molybdenum (Mo) %", min_value=0.0, max_value=1.0, value=0.20)
         
     with col4:
         st.markdown("**Mechanical / Inclusions**")
-        f22 = st.number_input("22. RedRatio", value=500.0)
-        f23 = st.number_input("23. dA", value=0.0)
-        f24 = st.number_input("24. dB", value=0.0)
-        f25 = st.number_input("25. dC", value=0.0)
+        f22 = st.number_input("22. RedRatio", min_value=300.0, max_value=800.0, value=500.0)
+        f23 = st.number_input("23. dA", min_value=0.0, max_value=10.0, value=0.0)
+        f24 = st.number_input("24. dB", min_value=0.0, max_value=10.0, value=0.0)
+        f25 = st.number_input("25. dC", min_value=0.0, max_value=10.0, value=0.0)
         
     st.markdown("---") # Just to separate the UI with a horizontal line
     
