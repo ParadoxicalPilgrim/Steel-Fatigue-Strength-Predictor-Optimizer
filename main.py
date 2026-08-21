@@ -156,7 +156,7 @@ with tab2:
     if st.button("Run AI Optimizer ", use_container_width=True):
         
         # UI Spinner while calculating
-        with st.spinner("AI is evaluating millions of combinations. Please wait ~20 seconds..."):
+        with st.spinner("AI is evaluating millions of combinations. Please wait ~40 seconds..."):
             
             # Step 3: Fitness Function
             def fitness_function(composition):
