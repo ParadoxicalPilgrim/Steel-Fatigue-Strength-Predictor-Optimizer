@@ -8,7 +8,7 @@ st.set_page_config(page_title="Steel Fatigue Predictor", page_icon="⚙️", lay
 st.title("Steel Fatigue Strength Predictor & Optimizer")
 
 # Domain of Applicability Update
-st.info("ℹ️ **Domain of Applicability:** This predictive model is trained strictly on the NIMS dataset. It is highly accurate for **carbon and low-alloy steels, carburizing steels, and spring steels**. Input boundaries are locked to the exact training distribution to prevent out-of-distribution (OOD) AI hallucinations.")
+st.info("ℹ️ **Domain of Applicability:** This predictive model is trained strictly on the NIMS dataset. It is accurate for **carbon and low-alloy steels, carburizing steels, and spring steels**. Input boundaries are locked to the exact training distribution to prevent out-of-distribution (OOD) AI hallucinations.")
 
 # --- 2. LOAD THE MODEL ---
 # Using @st.cache_resource so that the model is loaded only once and cached for future use to avoid slowing down the site.
