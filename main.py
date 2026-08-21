@@ -93,6 +93,9 @@ with tab2:
     st.header("Find Best Composition for Target Strength (Inverse Design)")
     st.markdown("Specify your required strength. The AI will reverse-engineer the exact 25-parameter composition!")
     
+    # Info box explaining the GA stochastic behavior
+    st.info("💡 **Did you know?** You might get different recipes for the same target strength! This isn't a bug—it mirrors real-world metallurgy. Just like a factory can achieve a specific strength using various combinations of heat treatments and alloys, our AI dynamically explores millions of valid combinations to find the fastest viable recipe for you.")
+    
     # User target input
     target_mpa = st.number_input("Target Fatigue Strength (MPa)", min_value=200.0, max_value=1200.0, value=650.0, step=10.0)
     
