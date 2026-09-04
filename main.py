@@ -89,7 +89,7 @@ with tab1:
 
         # --- DERIVED INDUSTRIAL & METALLURGICAL INSIGHTS (TAB 1) ---
         st.markdown("---")
-        st.subheader("🛠️ Derived Industrial & Metallurgical Insights")
+        st.subheader("🛠️ Derived Metallurgical Insights")
         
         # Note for the User explaining the formulas and standards
         st.info("""
@@ -242,7 +242,7 @@ with tab2:
                     else:
                         st.success(f"🟢 **{name}:**\n{best_recipe[i]:.3f}")
 
-            # --- DERIVED INDUSTRIAL & METALLURGICAL INSIGHTS (TAB 2) ---
+            # Deriving Metallurgical Insights below
             st.markdown("---")
             st.subheader("🛠️ Derived Insights for Optimized Recipe")
             
