@@ -81,11 +81,16 @@ with tab1:
                                 f21, f22, f23, f24, f25]])
         
         # Asking for predictions from the loaded model which is ANN (Artificial Neural Network)
-        prediction = model.predict(input_data)[0]
+        # Saving the prediction to session_state so it survives the site refresh when moving sliders
+        st.session_state['tab1_prediction'] = model.predict(input_data)[0]
+        st.balloons() # Just a fun animation upon calculation of result :)
+
+    # Checking if the prediction is saved in memory to display it alongside derived metrics
+    if 'tab1_prediction' in st.session_state:
+        prediction = st.session_state['tab1_prediction']
         
         # Printing the results
         st.success(f"### Predicted Fatigue Strength: {prediction:.2f} MPa")
-        st.balloons() # Just a fun animation upon calculation of result :)
 
         # --- DERIVED INDUSTRIAL & METALLURGICAL INSIGHTS (TAB 1) ---
         st.markdown("---")
@@ -222,76 +227,81 @@ with tab2:
                 tol=0.01       # Strict tolerance
             )
             
-            # Extract Results
-            best_recipe = result.x
-            achieved_strength = model.predict(best_recipe.reshape(1, -1))[0]
-            
-            st.success(f"### Optimization Complete! Achieved Strength: {achieved_strength:.2f} MPa")
+            # Saving the heavily processed GA results into session_state so they aren't lost on site refresh
+            st.session_state['tab2_best_recipe'] = result.x
+            st.session_state['tab2_achieved_strength'] = model.predict(result.x.reshape(1, -1))[0]
             st.balloons()
             
-            st.markdown("#### Complete Optimized Composition (All 25 Parameters):")
-            
-            # 5. Display ALL results in a clean 4-column layout
-            res_cols = st.columns(4)
-            for i, (name, _, _, _) in enumerate(features):
-                res_col = res_cols[i % 4]
-                with res_col:
-                    # If the user had locked, then it'll show 🔒 icon , otherwise 🟢
-                    if i in fixed_values_dict:
-                        st.info(f"🔒 **{name}:**\n{best_recipe[i]:.3f}")
-                    else:
-                        st.success(f"🟢 **{name}:**\n{best_recipe[i]:.3f}")
+    # Displaying the GA results outside the button click if they are present in memory
+    if 'tab2_best_recipe' in st.session_state:
+        best_recipe = st.session_state['tab2_best_recipe']
+        achieved_strength = st.session_state['tab2_achieved_strength']
+        
+        st.success(f"### Optimization Complete! Achieved Strength: {achieved_strength:.2f} MPa")
+        
+        st.markdown("#### Complete Optimized Composition (All 25 Parameters):")
+        
+        # 5. Display ALL results in a clean 4-column layout
+        res_cols = st.columns(4)
+        for i, (name, _, _, _) in enumerate(features):
+            res_col = res_cols[i % 4]
+            with res_col:
+                # If the user had locked, then it'll show 🔒 icon , otherwise 🟢
+                if i in fixed_values_dict:
+                    st.info(f"🔒 **{name}:**\n{best_recipe[i]:.3f}")
+                else:
+                    st.success(f"🟢 **{name}:**\n{best_recipe[i]:.3f}")
 
-            # Deriving Metallurgical Insights below
-            st.markdown("---")
-            st.subheader("🛠️ Derived Insights for Optimized Recipe")
+        # Deriving Metallurgical Insights below
+        st.markdown("---")
+        st.subheader("🛠️ Derived Insights for Optimized Recipe")
+        
+        # Note for the User
+        st.info("""
+        **📝 Derivation Standards & Formulas:**
+        * **Carbon Equivalent (CE):** Calculated using the standard **IIW (International Institute of Welding)** formula: $CE = \%C + \\frac{\%Mn}{6} + \\frac{\%Cr + \%Mo}{5} + \\frac{\%Ni + \%Cu}{15}$.
+        * **Estimated UTS:** Based on the metallurgical thumb-rule that Fatigue Limit is approximately **50% of the Ultimate Tensile Strength** for most steels.
+        * **Safe Working Stress:** Derived by dividing the predicted fatigue strength by the chosen **Factor of Safety (FoS)**.
+        * **Inclusion Alert:** Flags high risk if the combined percentage of Phosphorus (P) and Sulfur (S) exceeds the typical industrial threshold of **0.04%**.
+        """)
+        
+        # Extracting optimized chemical values from best_recipe array
+        opt_c = best_recipe[12]
+        opt_mn = best_recipe[14]
+        opt_p = best_recipe[15]
+        opt_s = best_recipe[16]
+        opt_ni = best_recipe[17]
+        opt_cr = best_recipe[18]
+        opt_cu = best_recipe[19]
+        opt_mo = best_recipe[20]
+        
+        # 1. Carbon Equivalent (IIW Formula)
+        ce_ga = opt_c + (opt_mn / 6.0) + ((opt_cr + opt_mo) / 5.0) + ((opt_ni + opt_cu) / 15.0)
+        
+        # 2. Estimated UTS
+        est_uts_ga = achieved_strength * 2.0
+        
+        # 3. Dynamic Factor of Safety (FoS) Slider (Added unique key for Tab 2)
+        fos_ga = st.slider("Select Design Factor of Safety (FoS):", min_value=1.2, max_value=3.0, value=2.0, step=0.1, key="fos_tab2")
+        safe_stress_ga = achieved_strength / fos_ga
+        
+        # Display Metrics
+        ga_col1, ga_col2, ga_col3 = st.columns(3)
+        with ga_col1:
+            st.metric("Safe Working Stress", f"{safe_stress_ga:.2f} MPa", delta=f"FoS: {fos_ga}")
+        with ga_col2:
+            st.metric("Estimated UTS", f"~{est_uts_ga:.2f} MPa")
+        with ga_col3:
+            st.metric("Carbon Equivalent (CE)", f"{ce_ga:.3f}")
             
-            # Note for the User
-            st.info("""
-            **📝 Derivation Standards & Formulas:**
-            * **Carbon Equivalent (CE):** Calculated using the standard **IIW (International Institute of Welding)** formula: $CE = \%C + \\frac{\%Mn}{6} + \\frac{\%Cr + \%Mo}{5} + \\frac{\%Ni + \%Cu}{15}$.
-            * **Estimated UTS:** Based on the metallurgical thumb-rule that Fatigue Limit is approximately **50% of the Ultimate Tensile Strength** for most steels.
-            * **Safe Working Stress:** Derived by dividing the predicted fatigue strength by the chosen **Factor of Safety (FoS)**.
-            * **Inclusion Alert:** Flags high risk if the combined percentage of Phosphorus (P) and Sulfur (S) exceeds the typical industrial threshold of **0.04%**.
-            """)
+        # Physical Metallurgical Warnings
+        if ce_ga < 0.40:
+            st.success("✅ **Weldability:** Excellent (No pre-heating required)")
+        elif 0.40 <= ce_ga <= 0.45:
+            st.warning("⚠️ **Weldability:** Moderate (Pre-heating recommended before welding)")
+        else:
+            st.error("🚨 **Weldability:** Poor (High risk of cold cracking during welding)")
             
-            # Extracting optimized chemical values from best_recipe array
-            opt_c = best_recipe[12]
-            opt_mn = best_recipe[14]
-            opt_p = best_recipe[15]
-            opt_s = best_recipe[16]
-            opt_ni = best_recipe[17]
-            opt_cr = best_recipe[18]
-            opt_cu = best_recipe[19]
-            opt_mo = best_recipe[20]
-            
-            # 1. Carbon Equivalent (IIW Formula)
-            ce_ga = opt_c + (opt_mn / 6.0) + ((opt_cr + opt_mo) / 5.0) + ((opt_ni + opt_cu) / 15.0)
-            
-            # 2. Estimated UTS
-            est_uts_ga = achieved_strength * 2.0
-            
-            # 3. Dynamic Factor of Safety (FoS) Slider (Added unique key for Tab 2)
-            fos_ga = st.slider("Select Design Factor of Safety (FoS):", min_value=1.2, max_value=3.0, value=2.0, step=0.1, key="fos_tab2")
-            safe_stress_ga = achieved_strength / fos_ga
-            
-            # Display Metrics
-            ga_col1, ga_col2, ga_col3 = st.columns(3)
-            with ga_col1:
-                st.metric("Safe Working Stress", f"{safe_stress_ga:.2f} MPa", delta=f"FoS: {fos_ga}")
-            with ga_col2:
-                st.metric("Estimated UTS", f"~{est_uts_ga:.2f} MPa")
-            with ga_col3:
-                st.metric("Carbon Equivalent (CE)", f"{ce_ga:.3f}")
-                
-            # Physical Metallurgical Warnings
-            if ce_ga < 0.40:
-                st.success("✅ **Weldability:** Excellent (No pre-heating required)")
-            elif 0.40 <= ce_ga <= 0.45:
-                st.warning("⚠️ **Weldability:** Moderate (Pre-heating recommended before welding)")
-            else:
-                st.error("🚨 **Weldability:** Poor (High risk of cold cracking during welding)")
-                
-            # Inclusion / Brittleness Risk
-            if (opt_p + opt_s) > 0.04:
-                st.error("⚠️ **Inclusion Alert:** Combined P + S > 0.04%. High risk of brittle fracture under impact loading!")
+        # Inclusion / Brittleness Risk
+        if (opt_p + opt_s) > 0.04:
+            st.error("⚠️ **Inclusion Alert:** Combined P + S > 0.04%. High risk of brittle fracture under impact loading!")
