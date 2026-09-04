@@ -87,6 +87,51 @@ with tab1:
         st.success(f"### Predicted Fatigue Strength: {prediction:.2f} MPa")
         st.balloons() # Just a fun animation upon calculation of result :)
 
+        # --- DERIVED INDUSTRIAL & METALLURGICAL INSIGHTS (TAB 1) ---
+        st.markdown("---")
+        st.subheader("🛠️ Derived Industrial & Metallurgical Insights")
+        
+        # Note for the User explaining the formulas and standards
+        st.info("""
+        **📝 Derivation Standards & Formulas:**
+        * **Carbon Equivalent (CE):** Calculated using the standard **IIW (International Institute of Welding)** formula: $CE = \%C + \\frac{\%Mn}{6} + \\frac{\%Cr + \%Mo}{5} + \\frac{\%Ni + \%Cu}{15}$.
+        * **Estimated UTS:** Based on the metallurgical thumb-rule that Fatigue Limit is approximately **50% of the Ultimate Tensile Strength** for most steels.
+        * **Safe Working Stress:** Derived by dividing the predicted fatigue strength by the chosen **Factor of Safety (FoS)**.
+        * **Inclusion Alert:** Flags high risk if the combined percentage of Phosphorus (P) and Sulfur (S) exceeds the typical industrial threshold of **0.04%**.
+        """)
+        
+        # 1. Carbon Equivalent (IIW Formula)
+        # f13: C, f15: Mn, f18: Ni, f19: Cr, f20: Cu, f21: Mo
+        ce = f13 + (f15 / 6.0) + ((f19 + f21) / 5.0) + ((f18 + f20) / 15.0)
+        
+        # 2. Estimated UTS (Fatigue Limit ~ 50% of UTS)
+        est_uts = prediction * 2.0
+        
+        # 3. Dynamic Factor of Safety (FoS) Slider
+        fos = st.slider("Select Design Factor of Safety (FoS):", min_value=1.2, max_value=3.0, value=2.0, step=0.1)
+        safe_stress = prediction / fos
+        
+        # Display Metrics in 3 Columns
+        m_col1, m_col2, m_col3 = st.columns(3)
+        with m_col1:
+            st.metric("Safe Working Stress", f"{safe_stress:.2f} MPa", delta=f"FoS: {fos}")
+        with m_col2:
+            st.metric("Estimated UTS", f"~{est_uts:.2f} MPa")
+        with m_col3:
+            st.metric("Carbon Equivalent (CE)", f"{ce:.3f}")
+            
+        # Physical Metallurgical Warnings
+        if ce < 0.40:
+            st.success("✅ **Weldability:** Excellent (No pre-heating required)")
+        elif 0.40 <= ce <= 0.45:
+            st.warning("⚠️ **Weldability:** Moderate (Pre-heating recommended before welding)")
+        else:
+            st.error("🚨 **Weldability:** Poor (High risk of cold cracking during welding)")
+            
+        # Inclusion / Brittleness Risk (Phosphorus + Sulfur)
+        if (f16 + f17) > 0.04:
+            st.error("⚠️ **Inclusion Alert:** Combined P + S > 0.04%. High risk of brittle fracture under impact loading!")
+
 
 # --- TAB 2: OPTIMIZER ---
 with tab2:
@@ -196,3 +241,57 @@ with tab2:
                         st.info(f"🔒 **{name}:**\n{best_recipe[i]:.3f}")
                     else:
                         st.success(f"🟢 **{name}:**\n{best_recipe[i]:.3f}")
+
+            # --- DERIVED INDUSTRIAL & METALLURGICAL INSIGHTS (TAB 2) ---
+            st.markdown("---")
+            st.subheader("🛠️ Derived Insights for Optimized Recipe")
+            
+            # Note for the User
+            st.info("""
+            **📝 Derivation Standards & Formulas:**
+            * **Carbon Equivalent (CE):** Calculated using the standard **IIW (International Institute of Welding)** formula: $CE = \%C + \\frac{\%Mn}{6} + \\frac{\%Cr + \%Mo}{5} + \\frac{\%Ni + \%Cu}{15}$.
+            * **Estimated UTS:** Based on the metallurgical thumb-rule that Fatigue Limit is approximately **50% of the Ultimate Tensile Strength** for most steels.
+            * **Safe Working Stress:** Derived by dividing the predicted fatigue strength by the chosen **Factor of Safety (FoS)**.
+            * **Inclusion Alert:** Flags high risk if the combined percentage of Phosphorus (P) and Sulfur (S) exceeds the typical industrial threshold of **0.04%**.
+            """)
+            
+            # Extracting optimized chemical values from best_recipe array
+            opt_c = best_recipe[12]
+            opt_mn = best_recipe[14]
+            opt_p = best_recipe[15]
+            opt_s = best_recipe[16]
+            opt_ni = best_recipe[17]
+            opt_cr = best_recipe[18]
+            opt_cu = best_recipe[19]
+            opt_mo = best_recipe[20]
+            
+            # 1. Carbon Equivalent (IIW Formula)
+            ce_ga = opt_c + (opt_mn / 6.0) + ((opt_cr + opt_mo) / 5.0) + ((opt_ni + opt_cu) / 15.0)
+            
+            # 2. Estimated UTS
+            est_uts_ga = achieved_strength * 2.0
+            
+            # 3. Dynamic Factor of Safety (FoS) Slider (Added unique key for Tab 2)
+            fos_ga = st.slider("Select Design Factor of Safety (FoS):", min_value=1.2, max_value=3.0, value=2.0, step=0.1, key="fos_tab2")
+            safe_stress_ga = achieved_strength / fos_ga
+            
+            # Display Metrics
+            ga_col1, ga_col2, ga_col3 = st.columns(3)
+            with ga_col1:
+                st.metric("Safe Working Stress", f"{safe_stress_ga:.2f} MPa", delta=f"FoS: {fos_ga}")
+            with ga_col2:
+                st.metric("Estimated UTS", f"~{est_uts_ga:.2f} MPa")
+            with ga_col3:
+                st.metric("Carbon Equivalent (CE)", f"{ce_ga:.3f}")
+                
+            # Physical Metallurgical Warnings
+            if ce_ga < 0.40:
+                st.success("✅ **Weldability:** Excellent (No pre-heating required)")
+            elif 0.40 <= ce_ga <= 0.45:
+                st.warning("⚠️ **Weldability:** Moderate (Pre-heating recommended before welding)")
+            else:
+                st.error("🚨 **Weldability:** Poor (High risk of cold cracking during welding)")
+                
+            # Inclusion / Brittleness Risk
+            if (opt_p + opt_s) > 0.04:
+                st.error("⚠️ **Inclusion Alert:** Combined P + S > 0.04%. High risk of brittle fracture under impact loading!")
