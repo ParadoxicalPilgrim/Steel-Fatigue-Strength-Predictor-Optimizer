@@ -1,0 +1,15 @@
+name: Keep Streamlit App Awake
+
+on:
+  schedule:
+    - cron: '0 */10 * * *'  # Har 10 ghante mein
+  workflow_dispatch:  # Manual run ke liye
+
+jobs:
+  ping-app:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Ping Streamlit App
+        run: |
+          curl -s -o /dev/null -w "Status: %{http_code}\n" https://steel-strength-optimizer.streamlit.app
