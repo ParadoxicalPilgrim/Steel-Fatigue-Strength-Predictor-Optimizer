@@ -2,14 +2,21 @@ name: Keep Streamlit App Awake
 
 on:
   schedule:
-    - cron: '0 */10 * * *'  # Har 10 ghante mein
-  workflow_dispatch:  # Manual run ke liye
+    # Executes every 10 hours to prevent inactivity sleep mode
+    - cron: '0 */10 * * *'
+  
+  # Allows manual triggering of the workflow if needed
+  workflow_dispatch: 
 
 jobs:
   ping-app:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Ping Streamlit App
+      - name: Ping Streamlit App with Browser Headers
         run: |
-          curl -s -o /dev/null -w "Status: %{http_code}\n" https://steel-strength-optimizer.streamlit.app
+          echo "Initiating ping to keep the Streamlit app awake..."
+          curl -s -o /dev/null -w "HTTP Status: %{http_code}\n" \
+            -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
+            -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8" \
+            https://steel-strength-optimizer.streamlit.app
