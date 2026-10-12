@@ -15,7 +15,7 @@ This project directly replicates and significantly extends the published researc
 [(Springer)](https://link.springer.com/article/10.1186/2193-9772-3-8#additional-information).
 Using the National Institute for Materials Science (NIMS), Japan dataset, this project transitions the foundational metallurgical data normalization into a fully interactive, optimized predictive pipeline.
 
-## ✨ Key Application Features
+## 🌟 Key Application Features
 
 ### 1. Forward Predictor (Artificial Neural Network)
 * **Direct Input:** Enter the exact composition across 25 specific features (Chemical Composition, Heat Treatment phases, and Inclusions).
@@ -23,8 +23,8 @@ Using the National Institute for Materials Science (NIMS), Japan dataset, this p
 
 ### 2. Smart Inverse Optimizer (Differential Evolution)
 * **Target-Driven Engineering:** Input a desired fatigue strength target (e.g., 650 MPa).
-* **Constraint Locking:** Engineers can lock specific parameters (like Carbon % or Tempering Temperature) based on inventory or plant constraints.
-* **AI Optimization:** The application uses SciPy's **Differential Evolution** to explore thousands of parameter combinations and reverse-engineer the most optimal, physically viable 25-parameter recipe to achieve the exact target strength.
+* **Constraint Locking:** User can lock specific parameters (like Carbon % or Tempering Temperature) based on inventory or plant constraints.
+* **AI Optimization:** The application uses SciPy's **Differential Evolution** to explore thousands of parameter combinations and reverse-engineer the most optimal,  25-parameter recipe to achieve the exact target strength.
 
 ## 📊 Backend Pipeline & Data Architecture
 
