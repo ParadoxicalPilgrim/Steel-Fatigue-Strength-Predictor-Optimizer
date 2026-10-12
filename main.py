@@ -23,7 +23,7 @@ except Exception as e:
     st.error(f"Couldn't load model!!.⚠️  Error: {e}")
 
 # --- 3. CREATING TABS FOR UI ---
-tab1, tab2 = st.tabs(["Manual Predictor (Forward)", "Smart GA Optimizer (Inverse)"])
+tab1, tab2 = st.tabs(["Manual Predictor (Forward)", "Smart DE Optimizer (Inverse)"])
 
 # --- TAB 1: PREDICTOR ---
 with tab1:
