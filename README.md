@@ -13,7 +13,7 @@ A full-stack, data-driven web application and analytical framework that bridges 
 
 This project directly replicates and significantly extends the published research from the paper:
 [(Springer)](https://link.springer.com/article/10.1186/2193-9772-3-8#additional-information).
-Using the National Institute for Materials Science (NIMS), Japan dataset, this project transitions the foundational thermodynamic data normalization into a fully interactive, optimized predictive pipeline.
+Using the National Institute for Materials Science (NIMS), Japan dataset, this project transitions the foundational metallurgical data normalization into a fully interactive, optimized predictive pipeline.
 
 ## ✨ Key Application Features
 
@@ -29,7 +29,7 @@ Using the National Institute for Materials Science (NIMS), Japan dataset, this p
 ## 📊 Backend Pipeline & Data Architecture
 
 Behind the intuitive Streamlit UI lies a rigorous machine learning pipeline:
-* **Thermodynamic Data Normalization:** Standardizes multi-grade thermal histories, correctly managing missing phase-transformation parameters through domain-specific imputation and zero-time bounding.
+* **Metallurgical Data Normalization:** Standardizes multi-grade thermal histories, correctly managing missing phase-transformation parameters through domain-specific imputation and zero-time bounding.
 * **Exploratory Data Analysis (EDA):**
     * **SVD/PCA** coupled with **K-Means clustering (K=3)** to visualize intrinsic metallurgical groupings.
     * **Entropy-based Information Gain (IG)** evaluation to assess the predictive capability of all individual features.
